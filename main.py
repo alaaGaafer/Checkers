@@ -296,7 +296,6 @@ def get_legal_moves(board, player):
     return legal_moves
 
 
-kkgemql; lklf,klkw
 def moveHuman(board, piece, new_place, player):
     global DarkPieces
     global WhitePieces
