@@ -63,7 +63,7 @@ def Print_board(board):
         print()
 
 
-
+kkgemql; lklf,klkw
 def moveHuman(board, piece, new_place, player):
     global DarkPieces
     global WhitePieces
