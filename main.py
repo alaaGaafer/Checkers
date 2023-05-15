@@ -678,12 +678,6 @@ def winner(DarkPieces, WhitePieces):
     else:
         return False
 
-
-
-
-
-
-
 if __name__ == "__main__":
     counter=1
     DarkPieces = 12
