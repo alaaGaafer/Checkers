@@ -508,21 +508,23 @@ def get_legal_moves(board, player):
 
 
 def moveHuman(board, piece, new_place, player):
-    global DarkPieces
-    global WhitePieces
-    moved=False
+    DarkPieces = sum(row.count("D") for row in board)
+    WhitePieces = sum(row.count("W") for row in board)
+    DarkKings = sum(row.count("DK") for row in board)
+    WhiteKings = sum(row.count("WK") for row in board)
+    moved = False
     moves = get_legal_moves(board, player)
-    Temp=(0,0)
+    Temp = (0, 0)
     for move in moves:
-        if (Temp == move[0]):
+        if Temp == move[0]:
             mid_row = (move[0][0] + move[1][0]) // 2
             mid_col = (move[0][1] + move[1][1]) // 2
 
             # remove the piece that is being jumped
-            if board[mid_row][mid_col].startswith("D"):
+            if board[mid_row][mid_col].startswith("DD"):
                 DarkPieces -= 1
                 print("You ate a dark piece!")
-            elif board[mid_row][mid_col].startswith("W"):
+            elif board[mid_row][mid_col].startswith("DW"):
                 WhitePieces -= 1
                 print("You ate a White piece!")
             board[mid_row][mid_col] = "D"
@@ -530,10 +532,19 @@ def moveHuman(board, piece, new_place, player):
             # move the piece to the new place
             board[move[1][0]][move[1][1]] = board[move[0][0]][move[0][1]]
             board[move[0][0]][move[0][1]] = "D"
+            # promote the piece to a king if it reaches the end row
+            if player == "DW" and move[1][0] == 0 and board[move[1][0]][move[1][1]] == "DW":
+                board[move[1][0]][move[1][1]] = "DWK"
+                WhiteKings += 1
+                print("The piece was promoted to a king!")
+            elif player == "DD" and move[1][0] == 7 and board[move[1][0]][move[1][1]] == "DD":
+                board[move[1][0]][move[1][1]] = "DDK"
+                DarkKings += 1
+                print("The piece was promoted to a king!")
             start_gui()
             time.sleep(3)
             Temp = move[1]
-            moved=True
+            moved = True
         if move[0] == piece and move[1] == new_place:
             X, Y = piece[0], piece[1]
 
@@ -543,65 +554,40 @@ def moveHuman(board, piece, new_place, player):
                 mid_col = (move[0][1] + move[1][1]) // 2
 
                 # remove the piece that is being jumped
-                if board[mid_row][mid_col].startswith("D"):
+                if board[mid_row][mid_col].startswith("DD"):
                     DarkPieces -= 1
                     print("You ate a dark piece!")
-                elif board[mid_row][mid_col].startswith("W"):
+                elif board[mid_row][mid_col].startswith("DW"):
                     WhitePieces -= 1
                     print("You ate a White piece!")
+                elif board[mid_row][mid_col].startswith("DWK"):
+                    WhitePieces -= 1
+                    WhiteKings -= 1
+                    print("You ate a White King piece!")
+                elif board[mid_row][mid_col].startswith("DDK"):
+                    DarkPieces -= 1
+                    DarkKings -= 1
+                    print("You ate a Dark King piece!")
                 board[mid_row][mid_col] = "D"
 
             # move the piece to the new place
             board[move[1][0]][move[1][1]] = board[move[0][0]][move[0][1]]
             board[move[0][0]][move[0][1]] = "D"
-            start_gui()
-            time.sleep(3)
 
             # promote the piece to a king if it reaches the end row
-            if player == "W" and move[1][0] == 0:
-                board[move[1][0]][move[1][1]] = "WK"
+            if player == "DW" and move[1][0] == 0 and board[move[1][0]][move[1][1]] == "DW":
+                board[move[1][0]][move[1][1]] = "DWK"
+                WhiteKings += 1
                 print("The piece was promoted to a king!")
-            elif player == "D" and move[1][0] == 7:
-                board[move[1][0]][move[1][1]] = "DK"
+            elif player == "DD" and move[1][0] == 7 and board[move[1][0]][move[1][1]] == "DD":
+                board[move[1][0]][move[1][1]] = "DDK"
+                DarkKings += 1
                 print("The piece was promoted to a king!")
             Temp = move[1]
             moved = True
-    if(moved == False):
+    if not moved:
         print("That's an illegal move!")
-def Print_board(board):
-    # Print the header row with column indices
-    print("   ", end="")
-    for i in range(len(board[0])):
-        print(f"{i:2d} ", end="")
-    print()
-
-    # Print the board elements with row indices
-    for i, row in enumerate(board):
-        print(f"{i:2d} ", end="")
-        for element in row:
-            print(f"{element:2s} ", end="")
-        print()
-def winner(DarkPieces, WhitePieces):
-    if (WhitePieces == 0):
-        print("Winner is Dark pieces, ate all the white pieces!")
-        return True
-    elif (DarkPieces == 0):
-        print("Winner is White pieces, ate all the white pieces!")
-        return True
-    elif (not get_legal_moves(board, "DW")):
-        print("Winner is Dark pieces, no available moves for White pieces!")
-        return True
-    elif (not get_legal_moves(board, "DD")):
-        print("Winner is White pieces, no available moves for Dark pieces!")
-        return True
-    else:
-        return False
-
-
-
-
-
-
+    return board
 
 if __name__ == "__main__":
     counter=1
