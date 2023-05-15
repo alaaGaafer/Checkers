@@ -79,6 +79,60 @@ def create_board():
 
     return Board
 
+def small_legal_moves(board, player):
+    legal_moves = []
+    for row in range(len(board)):
+        for col in range(len(board[row])):
+            if board[row][col] == player or board[row][col] == player + "K":
+                # check for valid diagonal moves
+                if player == "DD":
+                    # Dark king reverse moves
+                    if board[row][col] == player + 'K':
+                        if row > 0 and col > 0 and board[row - 1][col - 1] == "D":
+                            legal_moves.append([(row, col), (row - 1, col - 1)])
+                        if row > 0 and col < 7 and board[row - 1][col + 1] == "D":
+                            legal_moves.append([(row, col), (row - 1, col + 1)])
+                        if row > 1 and col > 1 and (board[row - 1][col - 1].startswith("DW") or board[row - 1][col - 1].startswith("DWK")) and board[row - 2][
+                            col - 2] == "D":
+                            legal_moves.append([(row, col), (row - 2, col - 2)])
+                        if row > 1 and col < 6 and (board[row - 1][col + 1].startswith("DW") or board[row - 1][col + 1].startswith("DWK")) and board[row - 2][
+                            col + 2] == "D":
+                            legal_moves.append([(row, col), (row - 2, col + 2)])
+                    # Dark king reverse moves
+                    # dark pieces moves
+                    if row < 7 and col > 0 and board[row + 1][col - 1] == "D":
+                        legal_moves.append([(row, col), (row + 1, col - 1)])
+                    if row < 7 and col < 7 and board[row + 1][col + 1] == "D":
+                        legal_moves.append([(row, col), (row + 1, col + 1)])
+                    if row < 6 and col > 1 and (board[row + 1][col - 1].startswith("DW") or board[row + 1][col - 1].startswith("DWK")) and board[row + 2][col - 2] == "D":
+                        legal_moves.append(((row, col), (row + 2, col - 2)))
+                    if row < 6 and col < 6 and (board[row + 1][col + 1].startswith("DW") or board[row + 1][col + 1].startswith("DWK")) and board[row + 2][col + 2] == "D":
+                        legal_moves.append([(row, col), (row + 2, col + 2)])
+                    # dark pieces moves
+                elif player == "DW":
+                    # White king reverse moves
+                    if board[row][col] == player + 'K':
+                        if row < 7 and col > 0 and board[row + 1][col - 1] == "D":
+                            legal_moves.append([(row, col), (row + 1, col - 1)])
+                        if row < 7 and col < 7 and board[row + 1][col + 1] == "D":
+                            legal_moves.append([(row, col), (row + 1, col + 1)])
+                        if row < 6 and col > 1 and (board[row + 1][col - 1].startswith("DD") or board[row + 1][col - 1].startswith("DDK")) and board[row + 2][col - 2] == "D":
+                            legal_moves.append(((row, col), (row + 2, col - 2)))
+                        if row < 6 and col < 6 and (board[row + 1][col + 1].startswith("DD") or board[row + 1][col + 1].startswith("DDK")) and board[row + 2][col + 2] == "D":
+                            legal_moves.append([(row, col), (row + 2, col + 2)])
+                    # White king reverse moves
+                    # White pieces moves
+                    if row > 0 and col > 0 and board[row - 1][col - 1] == "D":
+                        legal_moves.append([(row, col), (row - 1, col - 1)])
+                    if row > 0 and col < 7 and board[row - 1][col + 1] == "D":
+                        legal_moves.append([(row, col), (row - 1, col + 1)])
+                    if row > 1 and col > 1 and (board[row - 1][col - 1].startswith("DD") or board[row - 1][col - 1].startswith("DDK")) and board[row - 2][col - 2] == "D":
+                        legal_moves.append([(row, col), (row - 2, col - 2)])
+                    if row > 1 and col < 6 and (board[row - 1][col + 1].startswith("DD") or board[row - 1][col + 1].startswith("DDK")) and board[row - 2][col + 2] == "D":
+                        legal_moves.append([(row, col), (row - 2, col + 2)])
+                    # White pieces moves
+    return legal_moves
+
 def get_legal_moves(board, player):
     legal_moves = []
     for row in range(len(board)):
@@ -508,10 +562,10 @@ def get_legal_moves(board, player):
 
 
 def moveHuman(board, piece, new_place, player):
-    DarkPieces = sum(row.count("D") for row in board)
-    WhitePieces = sum(row.count("W") for row in board)
-    DarkKings = sum(row.count("DK") for row in board)
-    WhiteKings = sum(row.count("WK") for row in board)
+    global DarkPieces
+    global WhitePieces
+    global DarkKings
+    global WhiteKings
     moved = False
     moves = get_legal_moves(board, player)
     Temp = (0, 0)
@@ -562,7 +616,7 @@ def moveHuman(board, piece, new_place, player):
                     print("You ate a White piece!")
                 elif board[mid_row][mid_col].startswith("DWK"):
                     WhitePieces -= 1
-                    WhiteKings -= 1
+                    WhiteKings-=1
                     print("You ate a White King piece!")
                 elif board[mid_row][mid_col].startswith("DDK"):
                     DarkPieces -= 1
@@ -575,19 +629,60 @@ def moveHuman(board, piece, new_place, player):
             board[move[0][0]][move[0][1]] = "D"
 
             # promote the piece to a king if it reaches the end row
-            if player == "DW" and move[1][0] == 0 and board[move[1][0]][move[1][1]] == "DW":
+            if player == "DW" and move[1][0] == 0 and board[move[1][0]][move[1][1]]=="DW":
                 board[move[1][0]][move[1][1]] = "DWK"
                 WhiteKings += 1
                 print("The piece was promoted to a king!")
-            elif player == "DD" and move[1][0] == 7 and board[move[1][0]][move[1][1]] == "DD":
+            elif player == "DD" and move[1][0] == 7 and board[move[1][0]][move[1][1]]=="DD":
                 board[move[1][0]][move[1][1]] = "DDK"
                 DarkKings += 1
                 print("The piece was promoted to a king!")
             Temp = move[1]
             moved = True
-    if not moved:
+    if moved == False:
         print("That's an illegal move!")
     return board
+
+def Print_board(board):
+    # Print the header row with column indices
+    print("   ", end="")
+    for i in range(len(board[0])):
+        print(f"{i:2d} ", end="")
+    print()
+
+    # Print the board elements with row indices
+    for i, row in enumerate(board):
+        print(f"{i:2d} ", end="")
+        for element in row:
+            print(f"{element:2s} ", end="")
+        print()
+
+def Computer(board,player):
+    legal_moves = small_legal_moves(board,player)
+    choice = random.choice(legal_moves)
+    moveHuman(board,choice[0],choice[1],player)
+
+def winner(DarkPieces, WhitePieces):
+    if (WhitePieces == 0):
+        print("Winner is Dark pieces, ate all the white pieces!")
+        return True
+    elif (DarkPieces == 0):
+        print("Winner is White pieces, ate all the white pieces!")
+        return True
+    elif (not get_legal_moves(board, "DW")):
+        print("Winner is Dark pieces, no available moves for White pieces!")
+        return True
+    elif (not get_legal_moves(board, "DD")):
+        print("Winner is White pieces, no available moves for Dark pieces!")
+        return True
+    else:
+        return False
+
+
+
+
+
+
 
 if __name__ == "__main__":
     counter=1
