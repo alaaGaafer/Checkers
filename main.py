@@ -2,6 +2,8 @@ import sys
 import time
 import pygame
 import random
+
+
 def start_gui():
     Brown = (139, 69, 19)
     WHITE = (255, 233, 197)
@@ -88,6 +90,8 @@ def create_board():
              ]
 
     return Board
+
+
 def small_legal_moves(board, player):
     legal_moves = []
     for row in range(len(board)):
@@ -101,10 +105,14 @@ def small_legal_moves(board, player):
                             legal_moves.append([(row, col), (row - 1, col - 1)])
                         if row > 0 and col < 7 and board[row - 1][col + 1] == "D":
                             legal_moves.append([(row, col), (row - 1, col + 1)])
-                        if row > 1 and col > 1 and (board[row - 1][col - 1].startswith("DW") or board[row - 1][col - 1].startswith("DWK")) and board[row - 2][
+                        if row > 1 and col > 1 and (
+                                board[row - 1][col - 1].startswith("DW") or board[row - 1][col - 1].startswith(
+                                "DWK")) and board[row - 2][
                             col - 2] == "D":
                             legal_moves.append([(row, col), (row - 2, col - 2)])
-                        if row > 1 and col < 6 and (board[row - 1][col + 1].startswith("DW") or board[row - 1][col + 1].startswith("DWK")) and board[row - 2][
+                        if row > 1 and col < 6 and (
+                                board[row - 1][col + 1].startswith("DW") or board[row - 1][col + 1].startswith(
+                                "DWK")) and board[row - 2][
                             col + 2] == "D":
                             legal_moves.append([(row, col), (row - 2, col + 2)])
                     # Dark king reverse moves
@@ -113,9 +121,13 @@ def small_legal_moves(board, player):
                         legal_moves.append([(row, col), (row + 1, col - 1)])
                     if row < 7 and col < 7 and board[row + 1][col + 1] == "D":
                         legal_moves.append([(row, col), (row + 1, col + 1)])
-                    if row < 6 and col > 1 and (board[row + 1][col - 1].startswith("DW") or board[row + 1][col - 1].startswith("DWK")) and board[row + 2][col - 2] == "D":
+                    if row < 6 and col > 1 and (
+                            board[row + 1][col - 1].startswith("DW") or board[row + 1][col - 1].startswith("DWK")) and \
+                            board[row + 2][col - 2] == "D":
                         legal_moves.append(((row, col), (row + 2, col - 2)))
-                    if row < 6 and col < 6 and (board[row + 1][col + 1].startswith("DW") or board[row + 1][col + 1].startswith("DWK")) and board[row + 2][col + 2] == "D":
+                    if row < 6 and col < 6 and (
+                            board[row + 1][col + 1].startswith("DW") or board[row + 1][col + 1].startswith("DWK")) and \
+                            board[row + 2][col + 2] == "D":
                         legal_moves.append([(row, col), (row + 2, col + 2)])
                     # dark pieces moves
                 elif player == "DW":
@@ -125,9 +137,13 @@ def small_legal_moves(board, player):
                             legal_moves.append([(row, col), (row + 1, col - 1)])
                         if row < 7 and col < 7 and board[row + 1][col + 1] == "D":
                             legal_moves.append([(row, col), (row + 1, col + 1)])
-                        if row < 6 and col > 1 and (board[row + 1][col - 1].startswith("DD") or board[row + 1][col - 1].startswith("DDK")) and board[row + 2][col - 2] == "D":
+                        if row < 6 and col > 1 and (
+                                board[row + 1][col - 1].startswith("DD") or board[row + 1][col - 1].startswith(
+                                "DDK")) and board[row + 2][col - 2] == "D":
                             legal_moves.append(((row, col), (row + 2, col - 2)))
-                        if row < 6 and col < 6 and (board[row + 1][col + 1].startswith("DD") or board[row + 1][col + 1].startswith("DDK")) and board[row + 2][col + 2] == "D":
+                        if row < 6 and col < 6 and (
+                                board[row + 1][col + 1].startswith("DD") or board[row + 1][col + 1].startswith(
+                                "DDK")) and board[row + 2][col + 2] == "D":
                             legal_moves.append([(row, col), (row + 2, col + 2)])
                     # White king reverse moves
                     # White pieces moves
@@ -135,13 +151,16 @@ def small_legal_moves(board, player):
                         legal_moves.append([(row, col), (row - 1, col - 1)])
                     if row > 0 and col < 7 and board[row - 1][col + 1] == "D":
                         legal_moves.append([(row, col), (row - 1, col + 1)])
-                    if row > 1 and col > 1 and (board[row - 1][col - 1].startswith("DD") or board[row - 1][col - 1].startswith("DDK")) and board[row - 2][col - 2] == "D":
+                    if row > 1 and col > 1 and (
+                            board[row - 1][col - 1].startswith("DD") or board[row - 1][col - 1].startswith("DDK")) and \
+                            board[row - 2][col - 2] == "D":
                         legal_moves.append([(row, col), (row - 2, col - 2)])
-                    if row > 1 and col < 6 and (board[row - 1][col + 1].startswith("DD") or board[row - 1][col + 1].startswith("DDK")) and board[row - 2][col + 2] == "D":
+                    if row > 1 and col < 6 and (
+                            board[row - 1][col + 1].startswith("DD") or board[row - 1][col + 1].startswith("DDK")) and \
+                            board[row - 2][col + 2] == "D":
                         legal_moves.append([(row, col), (row - 2, col + 2)])
                     # White pieces moves
     return legal_moves
-
 
 
 def get_legal_moves(board, player):
@@ -268,12 +287,16 @@ def get_legal_moves(board, player):
 
                     # Multiple jumps
                     # first left eat (First cond)
-                    if row < 6 and col > 1 and (board[row + 1][col - 1].startswith("DW") or board[row + 1][col - 1].startswith("DWK")) and board[row + 2][col - 2] == "D":
+                    if row < 6 and col > 1 and (
+                            board[row + 1][col - 1].startswith("DW") or board[row + 1][col - 1].startswith("DWK")) and \
+                            board[row + 2][col - 2] == "D":
                         legal_moves.append(((row, col), (row + 2, col - 2)))
                         newRow = row + 2
                         newCol = col - 2
                         # second right eat
-                        if newRow < 6 and newCol < 6 and (board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][newCol + 1].startswith("DWK")) and \
+                        if newRow < 6 and newCol < 6 and (
+                                board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][
+                            newCol + 1].startswith("DWK")) and \
                                 board[newRow + 2][newCol + 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             newRow = newRow + 2
@@ -285,11 +308,15 @@ def get_legal_moves(board, player):
                                     board[newRow + 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             # third left eat
-                            if newRow < 6 and newCol > 1 and (board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][newCol - 1].startswith("DWK")) and \
+                            if newRow < 6 and newCol > 1 and (
+                                    board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][
+                                newCol - 1].startswith("DWK")) and \
                                     board[newRow + 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                         # second left eat
-                        if newRow < 6 and newCol > 1 and (board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][newCol - 1].startswith("DWK")) and \
+                        if newRow < 6 and newCol > 1 and (
+                                board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][
+                            newCol - 1].startswith("DWK")) and \
                                 board[newRow + 2][newCol - 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                             newRow = newRow + 2
@@ -392,7 +419,7 @@ def get_legal_moves(board, player):
                                         board[newRow + 2][newCol - 2] == "D":
                                     legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                             # second left eat
-                            if newRow < 6  and newCol > 1 and (
+                            if newRow < 6 and newCol > 1 and (
                                     board[newRow + 1][newCol - 1].startswith("DD") or board[newRow + 1][
                                 newCol - 1].startswith("DDK")) and \
                                     board[newRow + 2][newCol - 2] == "D":
@@ -571,59 +598,66 @@ def get_legal_moves(board, player):
 
     return legal_moves
 
+
 import copy
 
 
-def evaluate(new_board, player):
-    DarkPieces = sum(row.count("D") for row in new_board)
-    WhitePieces = sum(row.count("W") for row in new_board)
-    DarkKings = sum(row.count("DK") for row in new_board)
-    WhiteKings = sum(row.count("WK") for row in new_board)
+def evaluate(board, player):
+    DarkPieces = sum(row.count("DD") + row.count("DDK") for row in board)
+    WhitePieces = sum(row.count("DW") + row.count("DWK") for row in board)
+    DarkKings = sum(row.count("DDK") for row in board)
+    WhiteKings = sum(row.count("DWK") for row in board)
     return DarkPieces - WhitePieces + (DarkKings * .5 - WhiteKings * .5)
 
 
-def minimax(board, player, depth, max_player=True):
-    new_board = copy.deepcopy(board)
-    DarkPieces = sum(row.count("D") for row in new_board)
-    WhitePieces = sum(row.count("W") for row in new_board)
-    if depth == 0 or winner(new_board,DarkPieces, WhitePieces):
-        return evaluate(new_board, player)
+def minimax(board, player, depth, max_player, first=True):
+    if first:
+        depth2= copy.deepcopy(depth)
+        new_board = copy.deepcopy(board)
+        next_player = "DD" if player == "DW" else "DW"
 
-    if max_player == True:
-        max_value = -float('inf')
+    if depth2 == 0 or winner(new_board):
+        depth2 = depth
+        result = evaluate(new_board, player)
+        new_board = copy.deepcopy(board)
+        return result, []
+
+    if not max_player:
+        min_value = float('inf')
         for move in small_legal_moves(new_board, player):
             piece, new_place = move
-            Computer(new_board,"DD")
-            new_board = moveHuman(new_board,piece,new_place,player)
-            value = minimax(new_board, player, depth - 1, False)
-            print(value)
-            max_value = max(max_value, value)
-            print(max_value)
-            if value >= max_value:
-                best_move = move
-    else:
-        min_value = float('inf')
-        next_player = "DD" if player == "DW" else "DW"
-        for move in small_legal_moves(new_board, next_player):
-            piece, new_place = move
-            Computer(new_board,"DD")
             new_board = moveHuman(new_board, piece, new_place, player)
-            value = minimax(new_board, player, depth - 1, True)
+            value, new_move = minimax(new_board, next_player, depth2 - 1, True)
             print(value)
             min_value = min(min_value, value)
             print(min_value)
             if value <= min_value:
                 best_move = move
-    piece, new_place = best_move
-    moveHuman(board, piece, new_place, player)
+    else:
+        max_value = -float('inf')
+        for move in small_legal_moves(new_board, next_player):
+            Computer(new_board, "DD")
+            value, new_move = minimax(new_board, player, depth2 - 1, False)
+            print(value)
+            max_value = max(max_value, value)
+            print(max_value)
+            if value >= max_value:
+                best_move = move
+    return value, best_move
+
+
+def play_ai_move(board, player, depth):
+    value,best_move = minimax(board, player, depth, False)
+    if best_move is not None:
+        moveHuman(board, best_move[0], best_move[1], player)
     return board
 
 
 def moveHuman(board, piece, new_place, player):
-    global DarkPieces
-    global WhitePieces
-    global DarkKings
-    global WhiteKings
+    DarkPieces = sum(row.count("DD") + row.count("DDK") for row in board)
+    WhitePieces = sum(row.count("DW") + row.count("DWK") for row in board)
+    DarkKings = sum(row.count("DDK") for row in board)
+    WhiteKings = sum(row.count("DWK") for row in board)
     moved = False
     moves = get_legal_moves(board, player)
     Temp = (0, 0)
@@ -674,7 +708,7 @@ def moveHuman(board, piece, new_place, player):
                     print("You ate a White piece!")
                 elif board[mid_row][mid_col].startswith("DWK"):
                     WhitePieces -= 1
-                    WhiteKings-=1
+                    WhiteKings -= 1
                     print("You ate a White King piece!")
                 elif board[mid_row][mid_col].startswith("DDK"):
                     DarkPieces -= 1
@@ -687,11 +721,11 @@ def moveHuman(board, piece, new_place, player):
             board[move[0][0]][move[0][1]] = "D"
 
             # promote the piece to a king if it reaches the end row
-            if player == "DW" and move[1][0] == 0 and board[move[1][0]][move[1][1]]=="DW":
+            if player == "DW" and move[1][0] == 0 and board[move[1][0]][move[1][1]] == "DW":
                 board[move[1][0]][move[1][1]] = "DWK"
                 WhiteKings += 1
                 print("The piece was promoted to a king!")
-            elif player == "DD" and move[1][0] == 7 and board[move[1][0]][move[1][1]]=="DD":
+            elif player == "DD" and move[1][0] == 7 and board[move[1][0]][move[1][1]] == "DD":
                 board[move[1][0]][move[1][1]] = "DDK"
                 DarkKings += 1
                 print("The piece was promoted to a king!")
@@ -717,14 +751,15 @@ def Print_board(board):
         print()
 
 
-def Computer(board,player):
-    legal_moves = small_legal_moves(board,player)
+def Computer(board, player):
+    legal_moves = small_legal_moves(board, player)
     choice = random.choice(legal_moves)
-    moveHuman(board,choice[0],choice[1],player)
+    moveHuman(board, choice[0], choice[1], player)
 
-def winner(new_board,DarkPieces, WhitePieces):
-    DarkPieces = sum(row.count("D") for row in board)
-    WhitePieces = sum(row.count("W") for row in board)
+
+def winner(new_board):
+    DarkPieces = sum(row.count("DD") + row.count("DDK") for row in board)
+    WhitePieces = sum(row.count("DW") + row.count("DWK") for row in board)
     if (WhitePieces == 0):
         print("Winner is Dark pieces, ate all the white pieces!")
         return True
@@ -750,12 +785,11 @@ if __name__ == "__main__":
     board = create_board()
     start_gui()
     time.sleep(3)
-    while not winner(board,DarkPieces, WhitePieces)== True:
+    while not winner(board) == True:
         if counter % 2 == 0:
             player = "DW"
-            print(player," Turn")
-            Computer(board,player)
-            #minimax(board,player,5,True)
+            print(player, " Turn")
+            play_ai_move(board, player, 2)
             # print(small_legal_moves(board,player))
             # piece = eval(input("enter the piece"))
             # Newplace = eval(input("enter the new place"))
@@ -764,8 +798,8 @@ if __name__ == "__main__":
             time.sleep(3)
         elif not counter % 2 == 0:
             player = "DD"
-            print(player," Turn")
-            Computer(board,player)
+            print(player, " Turn")
+            Computer(board, player)
             # print(small_legal_moves(board,player))
             # piece = eval(input("enter the piece"))
             # Newplace = eval(input("enter the new place"))
@@ -774,4 +808,3 @@ if __name__ == "__main__":
             time.sleep(3)
         counter += 1
     # board = create_board()
-
