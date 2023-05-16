@@ -1,7 +1,7 @@
 import sys
 import time
-
 import pygame
+import random
 def start_gui():
     Brown = (139, 69, 19)
     WHITE = (255, 233, 197)
@@ -39,8 +39,12 @@ def start_gui():
     # Load the images for the checkers and scale them down
     DD = pygame.image.load('pics/darkpng.png')
     DW = pygame.image.load('pics/whitepng.png')
+    DDK = pygame.image.load('pics/darkKing.png')
+    DWK = pygame.image.load('pics/WhiteKing.png')
     DW = pygame.transform.scale(DW, (int(board_size / 8), int(board_size / 8)))
     DD = pygame.transform.scale(DD, (int(board_size / 8), int(board_size / 8)))
+    DDK = pygame.transform.scale(DDK, (int(board_size / 8), int(board_size / 8)))
+    DWK = pygame.transform.scale(DWK, (int(board_size / 8), int(board_size / 8)))
 
     # Place the checkers on the board
     for row in range(8):
@@ -49,12 +53,18 @@ def start_gui():
                 board_surface.blit(DW, (col * (board_size / 8), row * (board_size / 8)))
             elif board[row][col] == 'DD':
                 board_surface.blit(DD, (col * (board_size / 8), row * (board_size / 8)))
+            elif board[row][col] == 'DDK':
+                board_surface.blit(DDK, (col * (board_size / 8), row * (board_size / 8)))
+            elif board[row][col] == 'DWK':
+                board_surface.blit(DWK, (col * (board_size / 8), row * (board_size / 8)))
 
     # Draw the board on the screen
     screen.blit(board_surface, [board_x, board_y])
 
     # Update the display
     pygame.display.flip()
+
+
 def create_board():
     # Board = [
     #       0     1     2     3    4     5    6     7
@@ -67,18 +77,17 @@ def create_board():
     #     6["W", "DD", "W", "DW", "W", "DW", "W", "DW"],
     #     7["DW", "W", "DW", "W", "DW", "W", "DW", "W"]
     # ]
-    Board = [["W", "DD", "W", "DD", "W", "D", "W", "DD"],
-             ["D", "W", "D", "W", "DD", "W", "DD", "W"],
-             ["W", "DD", "W", "D", "W", "DD", "W", "DD"],
+    Board = [["W", "DD", "W", "DD", "W", "DD", "W", "DD"],
+             ["DD", "W", "DD", "W", "DD", "W", "DD", "W"],
+             ["W", "DD", "W", "DD", "W", "DD", "W", "DD"],
              ["D", "W", "D", "W", "D", "W", "D", "W"],
-             ["W", "DD", "W", "D", "W", "D", "W", "D"],
-             ["D", "W", "D", "W", "DW", "W", "DW", "W"],
-             ["W", "DD", "W", "DW", "W", "DW", "W", "DW"],
+             ["W", "D", "W", "D", "W", "D", "W", "D"],
+             ["DW", "W", "DW", "W", "DW", "W", "DW", "W"],
+             ["W", "DW", "W", "DW", "W", "DW", "W", "DW"],
              ["DW", "W", "DW", "W", "DW", "W", "DW", "W"]
              ]
 
     return Board
-
 def small_legal_moves(board, player):
     legal_moves = []
     for row in range(len(board)):
@@ -132,6 +141,8 @@ def small_legal_moves(board, player):
                         legal_moves.append([(row, col), (row - 2, col + 2)])
                     # White pieces moves
     return legal_moves
+
+
 
 def get_legal_moves(board, player):
     legal_moves = []
@@ -560,6 +571,53 @@ def get_legal_moves(board, player):
 
     return legal_moves
 
+import copy
+
+
+def evaluate(new_board, player):
+    DarkPieces = sum(row.count("D") for row in new_board)
+    WhitePieces = sum(row.count("W") for row in new_board)
+    DarkKings = sum(row.count("DK") for row in new_board)
+    WhiteKings = sum(row.count("WK") for row in new_board)
+    return DarkPieces - WhitePieces + (DarkKings * .5 - WhiteKings * .5)
+
+
+def minimax(board, player, depth, max_player=True):
+    new_board = copy.deepcopy(board)
+    DarkPieces = sum(row.count("D") for row in new_board)
+    WhitePieces = sum(row.count("W") for row in new_board)
+    if depth == 0 or winner(new_board,DarkPieces, WhitePieces):
+        return evaluate(new_board, player)
+
+    if max_player == True:
+        max_value = -float('inf')
+        for move in small_legal_moves(new_board, player):
+            piece, new_place = move
+            Computer(new_board,"DD")
+            new_board = moveHuman(new_board,piece,new_place,player)
+            value = minimax(new_board, player, depth - 1, False)
+            print(value)
+            max_value = max(max_value, value)
+            print(max_value)
+            if value >= max_value:
+                best_move = move
+    else:
+        min_value = float('inf')
+        next_player = "DD" if player == "DW" else "DW"
+        for move in small_legal_moves(new_board, next_player):
+            piece, new_place = move
+            Computer(new_board,"DD")
+            new_board = moveHuman(new_board, piece, new_place, player)
+            value = minimax(new_board, player, depth - 1, True)
+            print(value)
+            min_value = min(min_value, value)
+            print(min_value)
+            if value <= min_value:
+                best_move = move
+    piece, new_place = best_move
+    moveHuman(board, piece, new_place, player)
+    return board
+
 
 def moveHuman(board, piece, new_place, player):
     global DarkPieces
@@ -643,6 +701,7 @@ def moveHuman(board, piece, new_place, player):
         print("That's an illegal move!")
     return board
 
+
 def Print_board(board):
     # Print the header row with column indices
     print("   ", end="")
@@ -657,53 +716,62 @@ def Print_board(board):
             print(f"{element:2s} ", end="")
         print()
 
+
 def Computer(board,player):
     legal_moves = small_legal_moves(board,player)
     choice = random.choice(legal_moves)
     moveHuman(board,choice[0],choice[1],player)
 
-def winner(DarkPieces, WhitePieces):
+def winner(new_board,DarkPieces, WhitePieces):
+    DarkPieces = sum(row.count("D") for row in board)
+    WhitePieces = sum(row.count("W") for row in board)
     if (WhitePieces == 0):
         print("Winner is Dark pieces, ate all the white pieces!")
         return True
     elif (DarkPieces == 0):
         print("Winner is White pieces, ate all the white pieces!")
         return True
-    elif (not get_legal_moves(board, "DW")):
+    elif (not small_legal_moves(board, "DW")):
         print("Winner is Dark pieces, no available moves for White pieces!")
         return True
-    elif (not get_legal_moves(board, "DD")):
+    elif (not small_legal_moves(board, "DD")):
         print("Winner is White pieces, no available moves for Dark pieces!")
         return True
     else:
         return False
 
 
-
-
-
-
-
 if __name__ == "__main__":
-    counter=1
+    counter = 0
     DarkPieces = 12
     WhitePieces = 12
-    while True:
-        if counter==1:
-            board = create_board()
+    WhiteKings = 0
+    DarkKings = 0
+    board = create_board()
+    start_gui()
+    time.sleep(3)
+    while not winner(board,DarkPieces, WhitePieces)== True:
+        if counter % 2 == 0:
+            player = "DW"
+            print(player," Turn")
+            Computer(board,player)
+            #minimax(board,player,5,True)
+            # print(small_legal_moves(board,player))
+            # piece = eval(input("enter the piece"))
+            # Newplace = eval(input("enter the new place"))
+            # moveHuman(board,(5,0),(4,1),player)
             start_gui()
             time.sleep(3)
-            print(get_legal_moves(board, "DW"))
-            moveHuman(board, (7, 0), (5, 2), "DW")
-            Print_board(board)
-            counter=2
-        elif counter == 2:
-            time.sleep(3)
-            print(get_legal_moves(board, "DW"))
-            moveHuman(board, (5, 4), (4, 3), "DW")
-            Print_board(board)
+        elif not counter % 2 == 0:
+            player = "DD"
+            print(player," Turn")
+            Computer(board,player)
+            # print(small_legal_moves(board,player))
+            # piece = eval(input("enter the piece"))
+            # Newplace = eval(input("enter the new place"))
+            # moveHuman(board,(3, 6),(5, 4),player)
             start_gui()
-            counter=3
-        else:
-            time.sleep(20)
-    #board = create_board()
+            time.sleep(3)
+        counter += 1
+    # board = create_board()
+
