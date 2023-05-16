@@ -55,82 +55,6 @@ def start_gui():
 
     # Update the display
     pygame.display.flip()
-
-    # Main loop
-    # while True:
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             pygame.quit()
-    #             sys.exit()
-
-
-'''import sys
-import pygame
-from main import board
-
-# Define some colors
-Brown = (139, 69, 19)
-WHITE = (255, 233, 197)
-
-# Initialize Pygame
-pygame.init()
-
-# Set the dimensions of the screen
-screen_width = 750
-screen_height = 750
-screen = pygame.display.set_mode([screen_width, screen_height])
-
-# Set the dimensions of the board
-board_size = 750
-board_width = board_size
-board_height = board_size
-
-# Create a surface for the board
-board_surface = pygame.Surface([board_width, board_height])
-
-# Draw the board
-for row in range(8):
-    for col in range(8):
-        if (row + col) % 2 == 0:
-            color = WHITE
-        else:
-            color = Brown
-        pygame.draw.rect(board_surface, color, [col * (board_size/8), row * (board_size/8), (board_size/8), (board_size/8)])
-
-# Set the position of the board on the screen
-board_x = (screen_width - board_width) // 2
-board_y = (screen_height - board_height) // 2
-
-# Load the images for the checkers and scale them down
-DD = pygame.image.load('pics/darkpng.png')
-DW = pygame.image.load('pics/whitepng.png')
-DW = pygame.transform.scale(DW, (int(board_size/8), int(board_size/8)))
-DD = pygame.transform.scale(DD, (int(board_size/8), int(board_size/8)))
-
-# Place the checkers on the board
-for row in range(8):
-    for col in range(8):
-        if board[row][col] == 'DW':
-            board_surface.blit(DW, (col * (board_size/8), row * (board_size/8)))
-        elif board[row][col] == 'DD':
-            board_surface.blit(DD, (col * (board_size/8), row * (board_size/8)))
-
-# Draw the board on the screen
-screen.blit(board_surface, [board_x, board_y])
-
-# Update the display
-pygame.display.flip()
-
-# Main loop
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()'''
-
-
-
-
 def create_board():
     # Board = [
     #       0     1     2     3    4     5    6     7
@@ -162,6 +86,114 @@ def get_legal_moves(board, player):
             if board[row][col] == player or board[row][col] == player + "K":
                 # check for valid diagonal moves
                 if player == "DD":
+                    if board[row][col] == player + 'K':
+                        if board[row][col] == player + 'K':
+                            # Dark King moves
+                            # -----------------------------------------------------------------------------------------
+                            if row > 0 and col > 0 and board[row - 1][col - 1] == "D":
+                                legal_moves.append([(row, col), (row - 1, col - 1)])
+                            if row > 0 and col < 7 and board[row - 1][col + 1] == "D":
+                                legal_moves.append([(row, col), (row - 1, col + 1)])
+                            # first left eat(First cond)
+                            if row > 1 and col > 1 and (
+                                    board[row - 1][col - 1].startswith("DW") or board[row - 1][col - 1].startswith(
+                                "DWK")) and board[row - 2][
+                                col - 2] == "D":
+                                legal_moves.append([(row, col), (row - 2, col - 2)])
+                                newRow = row - 2
+                                newCol = col - 2
+                                # second right eat
+                                if newRow > 1 and newCol < 6 and (
+                                        board[newRow - 1][newCol + 1].startswith("DW") or board[newRow - 1][
+                                    newCol + 1].startswith("DWK")) and \
+                                        board[newRow - 2][newCol + 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
+                                    newRow = newRow - 2
+                                    newCol = newCol + 2
+                                    # third right eat
+                                    if row > 1 and col < 6 and (
+                                            board[newRow - 1][newCol + 1].startswith("DW") or board[newRow - 1][
+                                        newCol + 1].startswith("DWK")) and \
+                                            board[newRow - 2][newCol + 2] == "D":
+                                        legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
+                                    # third left eat
+                                    if row > 1 and col > 1 and (
+                                            board[newRow - 1][newCol - 1].startswith("DW") or board[newRow - 1][
+                                        newCol - 1].startswith("DWK")) and \
+                                            board[newRow - 2][newCol - 2] == "D":
+                                        legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
+                                # second left eat
+                                if newRow > 1 and newCol > 1 and (
+                                        board[newRow - 1][newCol - 1].startswith("DW") or board[newRow - 1][
+                                    newCol - 1].startswith("DWK")) and \
+                                        board[newRow - 2][newCol - 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
+                                    newRow = newRow - 2
+                                    newCol = newCol - 2
+                                    # third right eat
+                                    if newRow > 1 and col < 6 and (
+                                            board[newRow - 1][newCol + 1].startswith("DW") or board[newRow - 1][
+                                        newCol + 1].startswith("DWK")) and \
+                                            board[newRow - 2][newCol + 2] == "D":
+                                        legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
+                                    # third left eat
+                                    if newRow > 1 and newCol > 1 and (
+                                            board[newRow - 1][newCol - 1].startswith("DW") or board[newRow - 1][
+                                        newCol - 1].startswith("DWK")) and \
+                                            board[newRow - 2][newCol - 2] == "D":
+                                        legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
+                            # ------------------------------------------------------------------------------------------------
+                            # first right eat (Second cond)
+                            if row > 1 and col < 6 and (
+                                    board[row - 1][col + 1].startswith("DW") or board[row - 1][col + 1].startswith(
+                                "DWK")) and board[row - 2][
+                                col + 2] == "D":
+                                legal_moves.append([(row, col), (row - 2, col + 2)])
+                                newRow = row - 2
+                                newCol = col + 2
+                                # second right eat
+                                if newRow > 1 and newCol < 6 and (
+                                        board[newRow - 1][newCol + 1].startswith("DW") or board[newRow - 1][
+                                    newCol + 1].startswith("DWK")) and \
+                                        board[newRow - 2][newCol + 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
+                                    newRow = newRow - 2
+                                    newCol = newCol + 2
+                                    # third right eat
+                                    if newRow > 1 and newCol < 6 and (
+                                            board[newRow - 1][newCol + 1].startswith("DW") or board[newRow - 1][
+                                        newCol + 1].startswith("DWK")) and \
+                                            board[newRow - 2][newCol + 2] == "D":
+                                        legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
+                                    # third left eat
+                                    if newRow > 1 and newCol > 1 and (
+                                            board[newRow - 1][newCol - 1].startswith("DW") or board[newRow - 1][
+                                        newCol - 1].startswith("DWK")) and \
+                                            board[newRow - 2][newCol - 2] == "D":
+                                        legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
+                                # second left eat
+                                if newRow > 1 and newCol > 1 and (
+                                        board[newRow - 1][newCol - 1].startswith("DW") or board[newRow - 1][
+                                    newCol - 1].startswith("DWK")) and \
+                                        board[newRow - 2][newCol - 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
+                                    newRow = newRow - 2
+                                    newCol = newCol - 2
+                                    # third right eat
+                                    if newRow > 1 and newCol < 6 and (
+                                            board[newRow - 1][newCol + 1].startswith("DW") or board[newRow - 1][
+                                        newCol + 1].startswith("DWK")) and \
+                                            board[newRow - 2][newCol + 2] == "D":
+                                        legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
+                                    # third left eat
+                                    if newRow > 1 and newCol > 1 and (
+                                            board[newRow - 1][newCol - 1].startswith("DW") or board[newRow - 1][
+                                        newCol - 1].startswith("DWK")) and \
+                                            board[newRow - 2][newCol - 2] == "D":
+                                        legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
+                            # Dark King moves
+                            # -----------------------------------------------------------------------------------------
+
                     # Diagonal jumps
                     if row < 7 and col > 0 and board[row + 1][col - 1] == "D":
                         legal_moves.append([(row, col), (row + 1, col - 1)])
@@ -169,130 +201,309 @@ def get_legal_moves(board, player):
                         legal_moves.append([(row, col), (row + 1, col + 1)])
                     # Diagonal jumps
 
-                    #Multiple jumps
-                    #first left eat (First cond)
-                    if row < 6 and col > 1 and board[row + 1][col - 1].startswith("DW") and board[row + 2][col - 2] == "D":
+                    # Multiple jumps
+                    # first left eat (First cond)
+                    if row < 6 and col > 1 and (board[row + 1][col - 1].startswith("DW") or board[row + 1][col - 1].startswith("DWK")) and board[row + 2][col - 2] == "D":
                         legal_moves.append(((row, col), (row + 2, col - 2)))
                         newRow = row + 2
                         newCol = col - 2
                         # second right eat
-                        if newRow > 1 and newCol < 6 and board[newRow + 1][newCol + 1].startswith("DD") and board[newRow + 2][newCol + 2] == "D":
+                        if newRow < 6 and newCol < 6 and (board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][newCol + 1].startswith("DWK")) and \
+                                board[newRow + 2][newCol + 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             newRow = newRow + 2
                             newCol = newCol + 2
                             # third right eat
-                            if row > 1 and col < 6 and board[newRow + 1][newCol + 1].startswith("DD") and board[newRow + 2][newCol + 2] == "D":
+                            if newRow < 6 and newCol < 6 and (
+                                    board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][
+                                newCol + 1].startswith("DWK")) and \
+                                    board[newRow + 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             # third left eat
-                            if row > 1 and col > 1 and board[newRow + 1][newCol - 1].startswith("DD") and board[newRow + 2][newCol - 2] == "D":
+                            if newRow < 6 and newCol > 1 and (board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][newCol - 1].startswith("DWK")) and \
+                                    board[newRow + 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                         # second left eat
-                        if newRow > 1 and newCol > 1 and board[newRow + 1][newCol - 1].startswith("DD") and board[newRow + 2][newCol - 2] == "D":
+                        if newRow < 6 and newCol > 1 and (board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][newCol - 1].startswith("DWK")) and \
+                                board[newRow + 2][newCol - 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                             newRow = newRow + 2
                             newCol = newCol - 2
                             # third right eat
-                            if newRow > 1 and col < 6 and board[newRow + 1][newCol + 1].startswith("DD") and board[newRow + 2][newCol + 2] == "D":
+                            if newRow < 6 and col < 6 and (
+                                    board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][
+                                newCol - 1].startswith("DWK")) and \
+                                    board[newRow + 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             # third left eat
-                            if newRow > 1 and newCol > 1 and board[newRow + 1][newCol - 1].startswith("DD") and board[newRow - 2][newCol - 2] == "D":
+                            if newRow < 6 and newCol > 1 and (
+                                    board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][
+                                newCol - 1].startswith("DWK")) and \
+                                    board[newRow - 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                     # ------------------------------------------------------------------------------------------------
                     # first right eat (Second cond)
-                    if row < 6 and col < 6 and board[row + 1][col + 1].startswith("DW") and board[row + 2][col + 2] == "D":
+                    if row < 6 and col < 6 and (
+                            board[row + 1][col + 1].startswith("DW") or board[row + 1][col + 1].startswith("DWK")) and \
+                            board[row + 2][
+                                col + 2] == "D":
                         legal_moves.append([(row, col), (row + 2, col + 2)])
                         newRow = row + 2
                         newCol = col + 2
                         # second right eat
-                        if newRow < 6 and newCol < 6 and board[newRow + 1][newCol + 1].startswith("DD") and board[newRow + 2][newCol + 2] == "D":
+                        if newRow < 6 and newCol < 6 and (
+                                board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][
+                            newCol + 1].startswith("DWK")) and \
+                                board[newRow + 2][newCol + 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             newRow = newRow + 2
                             newCol = newCol + 2
                             # third right eat
-                            if newRow < 6 and newCol < 6 and board[newRow + 1][newCol + 1].startswith("DD") and board[newRow + 2][newCol + 2] == "D":
+                            if newRow < 6 and newCol < 6 and (
+                                    board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][
+                                newCol + 1].startswith("DWK")) and \
+                                    board[newRow + 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             # third left eat
-                            if newRow < 6 and newCol < 6 and board[newRow + 1][newCol - 1].startswith("DD") and board[newRow + 2][newCol - 2] == "D":
+                            if newRow < 6 and newCol > 1 and (
+                                    board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][
+                                newCol - 1].startswith("DWK")) and \
+                                    board[newRow + 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                         # second left eat
-                        if newRow < 6 and newCol < 6 and board[newRow + 1][newCol - 1].startswith("DD") and board[newRow + 2][newCol - 2] == "D":
+                        if newRow < 6 and newCol > 1 and (
+                                board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][
+                            newCol - 1].startswith("DWK")) and \
+                                board[newRow + 2][newCol - 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                             newRow = newRow + 2
                             newCol = newCol - 2
                             # third right eat
-                            if newRow < 6 and newCol < 6 and board[newRow + 1][newCol + 1].startswith("DD") and board[newRow + 2][newCol + 2] == "D":
+                            if newRow < 6 and newCol < 6 and (
+                                    board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][
+                                newCol + 1].startswith("DWK")) and \
+                                    board[newRow + 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             # third left eat
-                            if newRow < 6 and newCol < 6 and board[newRow + 1][newCol - 1].startswith("DD") and board[newRow - 2][newCol - 2] == "D":
+                            if newRow < 6 and newCol > 1 and (
+                                    board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][
+                                newCol - 1].startswith("DWK")) and \
+                                    board[newRow - 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                                 # multiple jumps
                 elif player == "DW":
+                    if board[row][col] == player + 'K':
+                        # White King moves
+                        # -----------------------------------------------------------------------------------------
+                        # first left eat (First cond)
+                        if row < 7 and col > 0 and board[row + 1][col - 1] == "D":
+                            legal_moves.append([(row, col), (row + 1, col - 1)])
+                        if row < 7 and col < 7 and board[row + 1][col + 1] == "D":
+                            legal_moves.append([(row, col), (row + 1, col + 1)])
+                        if row < 6 and col > 1 and (
+                                board[row + 1][col - 1].startswith("DD") or board[row + 1][col - 1].startswith(
+                            "DDK")) and board[row + 2][col - 2] == "D":
+                            legal_moves.append(((row, col), (row + 2, col - 2)))
+                            newRow = row + 2
+                            newCol = col - 2
+                            # second right eat
+                            if newRow < 6 and newCol < 6 and (
+                                    board[newRow + 1][newCol + 1].startswith("DD") or board[newRow + 1][
+                                newCol + 1].startswith("DDK")) and \
+                                    board[newRow + 2][newCol + 2] == "D":
+                                legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
+                                newRow = newRow + 2
+                                newCol = newCol + 2
+                                # third right eat
+                                if row < 6 and col < 6 and (
+                                        board[newRow + 1][newCol + 1].startswith("DD") or board[newRow + 1][
+                                    newCol + 1].startswith("DDK")) and \
+                                        board[newRow + 2][newCol + 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
+                                # third left eat
+                                if row < 6 and col > 1 and (
+                                        board[newRow + 1][newCol - 1].startswith("DD") or board[newRow + 1][
+                                    newCol - 1].startswith("DDK")) and \
+                                        board[newRow + 2][newCol - 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
+                            # second left eat
+                            if newRow < 6  and newCol > 1 and (
+                                    board[newRow + 1][newCol - 1].startswith("DD") or board[newRow + 1][
+                                newCol - 1].startswith("DDK")) and \
+                                    board[newRow + 2][newCol - 2] == "D":
+                                legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
+                                newRow = newRow + 2
+                                newCol = newCol - 2
+                                # third right eat
+                                if newRow < 6 and col < 6 and (
+                                        board[newRow + 1][newCol + 1].startswith("DD") or board[newRow + 1][
+                                    newCol + 1].startswith("DDK")) and \
+                                        board[newRow + 2][newCol + 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
+                                # third left eat
+                                if newRow < 6 and newCol > 1 and (board[newRow + 1][newCol - 1].startswith(
+                                        "DD") or board[newRow + 1][newCol - 1].startswith("DDK")) and \
+                                        board[newRow - 2][newCol - 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
+                        # ------------------------------------------------------------------------------------------------
+                        # first right eat (Second cond)
+                        if row < 6 and col < 6 and (
+                                board[row + 1][col + 1].startswith("DD") or board[row + 1][col + 1].startswith(
+                            "DDK")) and board[row + 2][
+                            col + 2] == "D":
+                            legal_moves.append([(row, col), (row + 2, col + 2)])
+                            newRow = row + 2
+                            newCol = col + 2
+                            # second right eat
+                            if newRow < 6 and newCol < 6 and (
+                                    board[newRow + 1][newCol + 1].startswith("DD") or board[newRow + 1][
+                                newCol + 1].startswith("DDK")) and \
+                                    board[newRow + 2][newCol + 2] == "D":
+                                legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
+                                newRow = newRow + 2
+                                newCol = newCol + 2
+                                # third right eat
+                                if newRow < 6 and newCol < 6 and (
+                                        board[newRow + 1][newCol + 1].startswith("DD") or board[newRow + 1][
+                                    newCol + 1].startswith("DDK")) and \
+                                        board[newRow + 2][newCol + 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
+                                # third left eat
+                                if newRow < 6 and newCol > 1 and (
+                                        board[newRow + 1][newCol - 1].startswith("DD") or board[newRow + 1][
+                                    newCol - 1].startswith("DDK")) and \
+                                        board[newRow + 2][newCol - 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
+                            # second left eat
+                            if newRow < 6 and newCol > 1 and (
+                                    board[newRow + 1][newCol - 1].startswith("DD") or board[newRow + 1][
+                                newCol - 1].startswith("DDK")) and \
+                                    board[newRow + 2][newCol - 2] == "D":
+                                legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
+                                newRow = newRow + 2
+                                newCol = newCol - 2
+                                # third right eat
+                                if newRow < 6 and newCol < 6 and (
+                                        board[newRow + 1][newCol + 1].startswith("DD") or board[newRow + 1][
+                                    newCol + 1].startswith("DDK")) and \
+                                        board[newRow + 2][newCol + 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
+                                # third left eat
+                                if newRow < 6 and newCol > 1 and (
+                                        board[newRow + 1][newCol - 1].startswith("DD") or board[newRow + 1][
+                                    newCol - 1].startswith("DDK")) and \
+                                        board[newRow - 2][newCol - 2] == "D":
+                                    legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
+                        # White King moves -----------------------------------------------------------------------------------------
+
                     # Digonal moves
                     if row > 0 and col > 0 and board[row - 1][col - 1] == "D":
                         legal_moves.append([(row, col), (row - 1, col - 1)])
                     if row > 0 and col < 7 and board[row - 1][col + 1] == "D":
                         legal_moves.append([(row, col), (row - 1, col + 1)])
                         # Digonal moves
-                        #multiple jumps
+                        # multiple jumps
 
                         # first left eat(First cond)
-                    if row > 1 and col > 1 and board[row - 1][col - 1].startswith("DD") and board[row - 2][col - 2] == "D":
+                    if row > 1 and col > 1 and (
+                            board[row - 1][col - 1].startswith("DD") or board[row - 1][col - 1].startswith("DDK")) and \
+                            board[row - 2][
+                                col - 2] == "D":
                         legal_moves.append([(row, col), (row - 2, col - 2)])
                         newRow = row - 2
                         newCol = col - 2
                         # second right eat
-                        if newRow > 1 and newCol < 6 and board[newRow - 1][newCol + 1].startswith("DD") and board[newRow - 2][newCol + 2] == "D":
+                        if newRow > 1 and newCol < 6 and (
+                                board[newRow - 1][newCol + 1].startswith("DD") or board[newRow - 1][
+                            newCol + 1].startswith("DDK")) and \
+                                board[newRow - 2][newCol + 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
                             newRow = newRow - 2
                             newCol = newCol + 2
                             # third right eat
-                            if row > 1 and col < 6 and board[newRow - 1][newCol + 1].startswith("DD") and board[newRow - 2][newCol + 2] == "D":
+                            if row > 1 and col < 6 and (
+                                    board[newRow - 1][newCol + 1].startswith("DD") or board[newRow - 1][
+                                newCol + 1].startswith("DDK")) and \
+                                    board[newRow - 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
                             # third left eat
-                            if row > 1 and col > 1 and board[newRow - 1][newCol - 1].startswith("DD") and board[newRow - 2][newCol - 2] == "D":
+                            if row > 1 and col > 1 and (
+                                    board[newRow - 1][newCol - 1].startswith("DD") or board[newRow - 1][
+                                newCol - 1].startswith("DDK")) and \
+                                    board[newRow - 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
                         # second left eat
-                        if newRow > 1 and newCol > 1 and board[newRow - 1][newCol - 1].startswith("DD") and board[newRow - 2][newCol - 2] == "D":
+                        if newRow > 1 and newCol > 1 and (
+                                board[newRow - 1][newCol - 1].startswith("DD") or board[newRow - 1][
+                            newCol - 1].startswith("DDK")) and \
+                                board[newRow - 2][newCol - 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
                             newRow = newRow - 2
                             newCol = newCol - 2
                             # third right eat
-                            if newRow > 1 and col < 6 and board[newRow - 1][newCol + 1].startswith("DD") and \
+                            if newRow > 1 and col < 6 and (
+                                    board[newRow - 1][newCol + 1].startswith("DD") or board[newRow - 1][
+                                newCol + 1].startswith("DDK")) and \
                                     board[newRow - 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
                             # third left eat
-                            if newRow > 1 and newCol > 1 and board[newRow - 1][newCol - 1].startswith("DD") and \
+                            if newRow > 1 and newCol > 1 and (
+                                    board[newRow - 1][newCol - 1].startswith("DD") or board[newRow - 1][
+                                newCol - 1].startswith("DDK")) and \
                                     board[newRow - 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
                     # ------------------------------------------------------------------------------------------------
                     # first right eat (Second cond)
-                    if row > 1 and col < 6 and board[row - 1][col + 1].startswith("DD") and board[row - 2][col + 2] == "D":
+                    if row > 1 and col < 6 and (
+                            board[row - 1][col + 1].startswith("DD") or board[row - 1][col + 1].startswith("DDK")) and \
+                            board[row - 2][
+                                col + 2] == "D":
                         legal_moves.append([(row, col), (row - 2, col + 2)])
-                        newRow=row - 2
-                        newCol=col + 2
+                        newRow = row - 2
+                        newCol = col + 2
                         # second right eat
-                        if newRow > 1 and newCol < 6 and board[newRow - 1][newCol + 1].startswith("DD") and board[newRow - 2][newCol + 2] == "D":
-                            legal_moves.append([(newRow, newCol), (newRow - 2, newCol +2)])
+                        if newRow > 1 and newCol < 6 and (
+                                board[newRow - 1][newCol + 1].startswith("DD") or board[newRow - 1][
+                            newCol + 1].startswith("DDK")) and \
+                                board[newRow - 2][newCol + 2] == "D":
+                            legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
                             newRow = newRow - 2
                             newCol = newCol + 2
                             # third right eat
-                            if row > 1 and col < 6 and board[newRow - 1][newCol + 1].startswith("DD") and board[newRow - 2][newCol + 2] == "D":
+                            if newRow > 1 and newCol < 6 and (
+                                    board[newRow - 1][newCol + 1].startswith("DD") or board[newRow - 1][
+                                newCol + 1].startswith("DDK")) and \
+                                    board[newRow - 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
                             # third left eat
-                            if row > 1 and col > 1 and board[newRow - 1][newCol - 1].startswith("DD") and board[newRow - 2][newCol - 2] == "D":
+                            if newRow > 1 and newCol > 1 and (
+                                    board[newRow - 1][newCol - 1].startswith("DD") or board[newRow - 1][
+                                newCol - 1].startswith("DDK")) and \
+                                    board[newRow - 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
                         # second left eat
-                        if newRow > 1 and newCol > 1 and board[newRow - 1][newCol - 1].startswith("DD") and board[newRow - 2][newCol - 2] == "D":
+                        if newRow > 1 and newCol > 1 and (
+                                board[newRow - 1][newCol - 1].startswith("DD") or board[newRow - 1][
+                            newCol - 1].startswith("DDK")) and \
+                                board[newRow - 2][newCol - 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
                             newRow = newRow - 2
                             newCol = newCol - 2
                             # third right eat
-                            if newRow > 1 and newCol < 6 and board[newRow - 1][newCol + 1].startswith("DD") and board[newRow - 2][newCol + 2] == "D":
+                            if newRow > 1 and newCol < 6 and (
+                                    board[newRow - 1][newCol + 1].startswith("DD") or board[newRow - 1][
+                                newCol + 1].startswith("DDK")) and \
+                                    board[newRow - 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
                             # third left eat
-                            if newRow > 1 and newCol > 1 and board[newRow - 1][newCol - 1].startswith("DD") and board[newRow - 2][newCol - 2] == "D":
+                            if newRow > 1 and newCol > 1 and (
+                                    board[newRow - 1][newCol - 1].startswith("DD") or board[newRow - 1][
+                                newCol - 1].startswith("DDK")) and \
+                                    board[newRow - 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow - 2, newCol - 2)])
                                 # multiple jumps
+                                # check for valid diagonal moves
+
     return legal_moves
 
 
