@@ -79,14 +79,14 @@ def create_board():
     #     6["W", "DD", "W", "DW", "W", "DW", "W", "DW"],
     #     7["DW", "W", "DW", "W", "DW", "W", "DW", "W"]
     # ]
-    Board = [["W", "DWK", "W", "DWK", "W", "DWK", "W", "DWK"],
-             ["DW", "W", "D", "W", "DW", "W", "DW", "W"],
-             ["W", "DW", "W", "DW", "W", "D", "W", "D"],
+    Board = [["W", "DD", "W", "DD", "W", "DD", "W", "DD"],
+             ["DD", "W", "DD", "W", "DD", "W", "DD", "W"],
+             ["W", "DD", "W", "DD", "W", "DD", "W", "DD"],
              ["D", "W", "D", "W", "D", "W", "D", "W"],
              ["W", "D", "W", "D", "W", "D", "W", "D"],
-             ["D", "W", "D", "W", "D", "W", "D", "W"],
-             ["W", "D", "W", "D", "W", "D", "W", "D"],
-             ["D", "W", "DDK", "W", "DDK", "W", "D", "W"]
+             ["DW", "W", "DW", "W", "DW", "W", "DW", "W"],
+             ["W", "DW", "W", "DW", "W", "DW", "W", "DW"],
+             ["DW", "W", "DW", "W", "DW", "W", "DW", "W"]
              ]
 
     return Board
@@ -607,19 +607,24 @@ def evaluate(board, player):
     WhitePieces = sum(row.count("DW") + row.count("DWK") for row in board)
     DarkKings = sum(row.count("DDK") for row in board)
     WhiteKings = sum(row.count("DWK") for row in board)
-    return DarkPieces - WhitePieces + (DarkKings * .5 - WhiteKings * .5)
+    WhiteMoves = len(small_legal_moves(board, "DW"))
+    DarkMoves = len(small_legal_moves(board, "DD"))
+    score = (DarkPieces - WhitePieces)
+    if player == "DW" and WhiteKings < 3:
+        score += (DarkKings - WhiteKings)
+    else:
+        score +=(DarkKings * 0.5 - WhiteKings * 0.5)
+    for row in board[0]:
+        if row == "DWK":
+            score += 1
+    score += (DarkMoves - WhiteMoves) * 0.1
+    return score
 
 
 def minimax(board, player, depth, max_player):
     next_player = "DD" if player == "DW" else "DW"
-    # if first:
-    #     #depth2= copy.deepcopy(depth)
-    #     new_board = copy.deepcopy(board)
-    #     next_player = "DD" if player == "DW" else "DW"
-    #     print("mohamed 3bet")
 
     if depth == 0 or winner(board):
-        #depth2 = depth
         result = evaluate(board, player)
         new_board = copy.deepcopy(board)
         return result, []
@@ -635,9 +640,7 @@ def minimax(board, player, depth, max_player):
             else:
                 new_board = moveHuman(new_board, piece, new_place, player)
                 value, new_move = minimax(new_board, next_player, depth - 1, True)
-                print(value)
                 min_value = min(min_value, value)
-                print(min_value)
                 if value <= min_value:
                     best_move = move
     else:
@@ -650,9 +653,7 @@ def minimax(board, player, depth, max_player):
             else:
                 Computer(board, "DD")
             value, new_move = minimax(new_board, player, depth - 1, False)
-            print(value)
             max_value = max(max_value, value)
-            print(max_value)
             if value >= max_value:
                 best_move = move
     return value, best_move
@@ -663,7 +664,52 @@ def play_ai_move(board, player, depth):
     if best_move is not None:
         moveHuman(board, best_move[0], best_move[1], player)
     return board
+def Alpha_beta_pruning(board, player, depth, alpha, beta, max_player):
+    next_player = "DD" if player == "DW" else "DW"
 
+    if depth == 0 or winner(board):
+        result = evaluate(board, player)
+        new_board = copy.deepcopy(board)
+        return result, []
+
+    if not max_player:
+        min_value = float('inf')
+        for move in small_legal_moves(board, player):
+            new_board = copy.deepcopy(board)
+            White_legal_moves = small_legal_moves(new_board, player)
+            piece, new_place = move
+            if len(White_legal_moves) == 0:
+                winner(board)
+            else:
+                new_board = moveHuman(new_board, piece, new_place, player)
+                value, new_move = Alpha_beta_pruning(new_board, next_player, depth - 1, alpha, beta, True)
+                min_value = min(min_value, value)
+                beta = min(beta, min_value)
+                if beta <= alpha:
+                    break
+        return min_value, move
+    else:
+        max_value = -float('inf')
+        for move in small_legal_moves(board, next_player):
+            new_board = copy.deepcopy(board)
+            legal_moves = small_legal_moves(new_board, next_player)
+            if len(legal_moves) == 0:
+                winner(board)
+            else:
+                Computer(board, "DD")
+            value, new_move = Alpha_beta_pruning(new_board, player, depth - 1, alpha, beta, False)
+            max_value = max(max_value, value)
+            alpha = max(alpha, max_value)
+            if beta <= alpha:
+                break
+        return max_value, move
+
+
+def play_alpha_beta_ai(board, player, depth):
+    value, best_move = Alpha_beta_pruning(board, player, depth, -float('inf'), float('inf'), False)
+    if best_move is not None:
+        moveHuman(board, best_move[0], best_move[1], player)
+    return board
 
 def moveHuman(board, piece, new_place, player):
     DarkPieces = sum(row.count("DD") + row.count("DDK") for row in board)
@@ -764,10 +810,10 @@ def winner(new_board):
     DarkPieces = sum(row.count("DD") + row.count("DDK") for row in board)
     WhitePieces = sum(row.count("DW") + row.count("DWK") for row in board)
     if (WhitePieces == 0):
-        print("Winner is Dark pieces, ate all the white pieces!")
+        print("Winner is Black pieces, ate all the white pieces!")
         return True
     elif (DarkPieces == 0):
-        print("Winner is White pieces, ate all the white pieces!")
+        print("Winner is White pieces, ate all the Black pieces!")
         return True
     elif (not small_legal_moves(new_board, "DW")):
         print("Winner is Dark pieces, no available moves for White pieces!")
@@ -788,26 +834,24 @@ if __name__ == "__main__":
     board = create_board()
     start_gui()
     time.sleep(1)
+    start_time = time.time()
     while not winner(board) == True:
         if counter % 2 == 0:
             player = "DW"
             print(player, " Turn")
             play_ai_move(board, player, 2)
-            # print(small_legal_moves(board,player))
-            # piece = eval(input("enter the piece"))
-            # Newplace = eval(input("enter the new place"))
-            # moveHuman(board,(5,0),(4,1),player)
+            #play_alpha_beta_ai(board,player,5)
             start_gui()
             time.sleep(1)
         elif not counter % 2 == 0:
             player = "DD"
             print(player, " Turn")
             Computer(board, player)
-            # print(small_legal_moves(board,player))
-            # piece = eval(input("enter the piece"))
-            # Newplace = eval(input("enter the new place"))
-            # moveHuman(board,(3, 6),(5, 4),player)
             start_gui()
             time.sleep(1)
         counter += 1
-    # board = create_board()
+time.sleep(3)
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"Minimax Elapsed Time: {elapsed_time} seconds")
+
