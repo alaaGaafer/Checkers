@@ -859,7 +859,7 @@ def minimax(board, player, depth, max_player,selected_strategy):
 def play_ai_move(board, player, depth,selected_strategy):
     value, best_move,selected_strategy = minimax(board, player, depth, False,selected_strategy)
     if best_move is not None:
-        moveHuman(board, best_move[0], best_move[1], player)
+        moveHuman(board, best_move[0], best_move[1], player,1)
     return board
 
 def Alpha_beta_pruning(board, player, depth, alpha, beta, max_player, selected_strategy):
@@ -928,6 +928,8 @@ def moveHuman(board, piece, new_place, player,realplay):
     moved = False
     moves = get_legal_moves(board, player)
     Temp = (0, 0)
+    # move=(3,6),(5,4)
+    #moves[....,[(3,6),(5,4)],[(5,4),(7,6)]
     for move in moves:
         if Temp == move[0]:
             mid_row = (move[0][0] + move[1][0]) // 2
@@ -955,6 +957,7 @@ def moveHuman(board, piece, new_place, player,realplay):
                 time.sleep(2)
             Temp = move[1]
             moved = True
+        # [piece=(0,1),new_place=(1,2)]
         if move[0] == piece and move[1] == new_place:
             X, Y = piece[0], piece[1]
 
@@ -979,7 +982,6 @@ def moveHuman(board, piece, new_place, player,realplay):
             # move the piece to the new place
             board[move[1][0]][move[1][1]] = board[move[0][0]][move[0][1]]
             board[move[0][0]][move[0][1]] = "D"
-
             # promote the piece to a king if it reaches the end row
             if player == "DW" and move[1][0] == 0 and board[move[1][0]][move[1][1]] == "DW":
                 board[move[1][0]][move[1][1]] = "DWK"
@@ -1049,10 +1051,13 @@ if __name__ == "__main__":
     print("Selected level:", selected_level)
     print("Selected strategy:", selected_strategy)
     print("Selected algorithm:", selected_algorithm)
+    # easy
     if selected_level == 1:
         depth = 2
+    # Medium
     elif selected_level == 2:
         depth = 4
+    # hard
     elif selected_level == 3:
         depth = 6
     counter = 0
