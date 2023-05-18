@@ -476,16 +476,12 @@ def get_legal_moves(board, player):
 
                     # Multiple jumps
                     # first left eat (First cond)
-                    if row < 6 and col > 1 and (
-                            board[row + 1][col - 1].startswith("DW") or board[row + 1][col - 1].startswith("DWK")) and \
-                            board[row + 2][col - 2] == "D":
+                    if row < 6 and col > 1 and (board[row + 1][col - 1].startswith("DW") or board[row + 1][col - 1].startswith("DWK")) and board[row + 2][col - 2] == "D":
                         legal_moves.append(((row, col), (row + 2, col - 2)))
                         newRow = row + 2
                         newCol = col - 2
                         # second right eat
-                        if newRow < 6 and newCol < 6 and (
-                                board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][
-                            newCol + 1].startswith("DWK")) and \
+                        if newRow < 6 and newCol < 6 and (board[newRow + 1][newCol + 1].startswith("DW") or board[newRow + 1][newCol + 1].startswith("DWK")) and \
                                 board[newRow + 2][newCol + 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             newRow = newRow + 2
@@ -497,15 +493,11 @@ def get_legal_moves(board, player):
                                     board[newRow + 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                             # third left eat
-                            if newRow < 6 and newCol > 1 and (
-                                    board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][
-                                newCol - 1].startswith("DWK")) and \
+                            if newRow < 6 and newCol > 1 and (board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][newCol - 1].startswith("DWK")) and \
                                     board[newRow + 2][newCol - 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                         # second left eat
-                        if newRow < 6 and newCol > 1 and (
-                                board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][
-                            newCol - 1].startswith("DWK")) and \
+                        if newRow < 6 and newCol > 1 and (board[newRow + 1][newCol - 1].startswith("DW") or board[newRow + 1][newCol - 1].startswith("DWK")) and \
                                 board[newRow + 2][newCol - 2] == "D":
                             legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                             newRow = newRow + 2
@@ -608,7 +600,7 @@ def get_legal_moves(board, player):
                                         board[newRow + 2][newCol - 2] == "D":
                                     legal_moves.append([(newRow, newCol), (newRow + 2, newCol - 2)])
                             # second left eat
-                            if newRow < 6 and newCol > 1 and (
+                            if newRow < 6  and newCol > 1 and (
                                     board[newRow + 1][newCol - 1].startswith("DD") or board[newRow + 1][
                                 newCol - 1].startswith("DDK")) and \
                                     board[newRow + 2][newCol - 2] == "D":
@@ -798,16 +790,32 @@ def evaluate(board, player,selected_strategy):
     WhiteKings = sum(row.count("DWK") for row in board)
     WhiteMoves = len(small_legal_moves(board, "DW"))
     DarkMoves = len(small_legal_moves(board, "DD"))
-    score = (DarkPieces - WhitePieces)
-    if player == "DW" and WhiteKings < 3:
-        score += (DarkKings - WhiteKings)
-    else:
-        score += (DarkKings * 0.5 - WhiteKings * 0.5)
-    for row in board[0]:
-        if row == "DWK":
-            score += 1
-    score += (DarkMoves - WhiteMoves) * 0.1
-    return score
+    # score = (DarkPieces - WhitePieces)
+    # if player == "DW" and WhiteKings < 3:
+    #     score += (DarkKings - WhiteKings)
+    # else:
+    #     score += (DarkKings * 0.5 - WhiteKings * 0.5)
+    # for row in board[0]:
+    #     if row == "DWK":
+    #         score += 1
+    # score += (DarkMoves - WhiteMoves) * 0.1
+    # return score
+    if selected_strategy == "Attack":
+        score = (DarkPieces - WhitePieces)
+        score += (DarkKings * 0.1 - WhiteKings * 0.1)
+        score += (DarkMoves - WhiteMoves) * 0.2
+        return score
+    elif selected_strategy == "Plot" :
+        score = (DarkPieces - WhitePieces)
+        if WhiteKings < 3:
+            score += (DarkKings - WhiteKings)
+        else:
+            score += (DarkKings * 0.5 - WhiteKings * 0.5)
+        for row in board[0]:
+            if row == "DWK":
+                score += 1
+        score += (DarkMoves - WhiteMoves) * 0.1
+        return score
 
 
 def minimax(board, player, depth, max_player,selected_strategy):
@@ -827,7 +835,7 @@ def minimax(board, player, depth, max_player,selected_strategy):
             if len(White_legal_moves) == 0:
                 winner(board,0)
             else:
-                new_board = moveHuman(new_board, piece, new_place, player)
+                new_board = moveHuman(new_board, piece, new_place, player,0)
                 value, new_move,selected_strategy = minimax(new_board, next_player, depth - 1, True,selected_strategy)
                 min_value = min(min_value, value)
                 if value <= min_value:
@@ -840,7 +848,7 @@ def minimax(board, player, depth, max_player,selected_strategy):
             if len(legal_moves) == 0:
                 winner(board,0)
             else:
-                Computer(board, "DD")
+                Computer(board, "DD",0)
             value, new_move,selected_strategy = minimax(new_board, player, depth - 1, False,selected_strategy)
             max_value = max(max_value, value)
             if value >= max_value:
@@ -872,7 +880,7 @@ def Alpha_beta_pruning(board, player, depth, alpha, beta, max_player, selected_s
             if len(White_legal_moves) == 0:
                 winner(board, 0)
             else:
-                new_board = moveHuman(new_board, piece, new_place, player)
+                new_board = moveHuman(new_board, piece, new_place, player,0)
                 value, new_move, selected_strategy = Alpha_beta_pruning(
                     new_board, next_player, depth - 1, alpha, beta, True, selected_strategy
                 )
@@ -892,7 +900,7 @@ def Alpha_beta_pruning(board, player, depth, alpha, beta, max_player, selected_s
             if len(legal_moves) == 0:
                 winner(board, 0)
             else:
-                Computer(board, "DD")
+                Computer(board, "DD",0)
             value, new_move, selected_strategy = Alpha_beta_pruning(
                 new_board, player, depth - 1, alpha, beta, False, selected_strategy
             )
@@ -909,10 +917,10 @@ def Alpha_beta_pruning(board, player, depth, alpha, beta, max_player, selected_s
 def play_alpha_beta_ai(board, player, depth,selected_strategy):
     value, best_move,selected_strategy = Alpha_beta_pruning(board, player, depth, -float('inf'), float('inf'), False,selected_strategy)
     if best_move is not None:
-        moveHuman(board, best_move[0], best_move[1], player)
+        moveHuman(board, best_move[0], best_move[1], player,1)
     return board
 
-def moveHuman(board, piece, new_place, player):
+def moveHuman(board, piece, new_place, player,realplay):
     DarkPieces = sum(row.count("DD") + row.count("DDK") for row in board)
     WhitePieces = sum(row.count("DW") + row.count("DWK") for row in board)
     DarkKings = sum(row.count("DDK") for row in board)
@@ -942,6 +950,9 @@ def moveHuman(board, piece, new_place, player):
             elif player == "DD" and move[1][0] == 7 and board[move[1][0]][move[1][1]] == "DD":
                 board[move[1][0]][move[1][1]] = "DDK"
                 DarkKings += 1
+            if realplay == 1:
+                start_gui(board)
+                time.sleep(2)
             Temp = move[1]
             moved = True
         if move[0] == piece and move[1] == new_place:
@@ -976,6 +987,9 @@ def moveHuman(board, piece, new_place, player):
             elif player == "DD" and move[1][0] == 7 and board[move[1][0]][move[1][1]] == "DD":
                 board[move[1][0]][move[1][1]] = "DDK"
                 DarkKings += 1
+            if realplay == 1:
+                start_gui(board)
+                time.sleep(2)
             Temp = move[1]
             moved = True
     if moved == False:
@@ -998,13 +1012,13 @@ def Print_board(board):
         print()
 
 
-def Computer(board, player):
+def Computer(board, player,RealPlay):
     legal_moves = small_legal_moves(board, player)
     if len(legal_moves) == 0:
         winner(board,0)
     else:
         choice = random.choice(legal_moves)
-        moveHuman(board, choice[0], choice[1], player)
+        moveHuman(board, choice[0], choice[1], player,RealPlay)
 
 import tkinter.messagebox as messagebox
 def winner(new_board,FromMain):
@@ -1053,22 +1067,16 @@ if __name__ == "__main__":
     while not winner(board,1) == True:
         if counter % 2 == 0:
             player = "DW"
-            print(player, " Turn")
             if selected_algorithm == "Minimax":
                 play_ai_move(board, player, depth,selected_strategy)
             elif selected_algorithm == "Alpha":
                 play_alpha_beta_ai(board,player,depth,selected_strategy)
-            start_gui(board)
-            time.sleep(3)
         elif not counter % 2 == 0:
             player = "DD"
-            print(player, " Turn")
-            Computer(board, player)
-            start_gui(board)
-            time.sleep(3)
+            Computer(board, player,1)
         counter += 1
-time.sleep(1)
 end_time = time.time()
+time.sleep(1)
 elapsed_time = end_time - start_time
-print(f"Minimax Elapsed Time: {elapsed_time} seconds")
+print(f"Elapsed Time: {elapsed_time} seconds")
 
