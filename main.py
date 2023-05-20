@@ -568,11 +568,11 @@ def get_legal_moves(board, player):
                     if board[row][col] == player + 'K':
                         # White King moves
                         # -----------------------------------------------------------------------------------------
-                        # first left eat (First cond)
                         if row < 7 and col > 0 and board[row + 1][col - 1] == "D":
                             legal_moves.append([(row, col), (row + 1, col - 1)])
                         if row < 7 and col < 7 and board[row + 1][col + 1] == "D":
                             legal_moves.append([(row, col), (row + 1, col + 1)])
+                            # first left eat (First cond)
                         if row < 6 and col > 1 and (
                                 board[row + 1][col - 1].startswith("DD") or board[row + 1][col - 1].startswith(
                             "DDK")) and board[row + 2][col - 2] == "D":
@@ -588,13 +588,13 @@ def get_legal_moves(board, player):
                                 newRow = newRow + 2
                                 newCol = newCol + 2
                                 # third right eat
-                                if row < 6 and col < 6 and (
+                                if newRow < 6 and newCol < 6 and (
                                         board[newRow + 1][newCol + 1].startswith("DD") or board[newRow + 1][
                                     newCol + 1].startswith("DDK")) and \
                                         board[newRow + 2][newCol + 2] == "D":
                                     legal_moves.append([(newRow, newCol), (newRow + 2, newCol + 2)])
                                 # third left eat
-                                if row < 6 and col > 1 and (
+                                if newRow < 6 and newCol > 1 and (
                                         board[newRow + 1][newCol - 1].startswith("DD") or board[newRow + 1][
                                     newCol - 1].startswith("DDK")) and \
                                         board[newRow + 2][newCol - 2] == "D":
@@ -608,7 +608,7 @@ def get_legal_moves(board, player):
                                 newRow = newRow + 2
                                 newCol = newCol - 2
                                 # third right eat
-                                if newRow < 6 and col < 6 and (
+                                if newRow < 6 and newCol < 6 and (
                                         board[newRow + 1][newCol + 1].startswith("DD") or board[newRow + 1][
                                     newCol + 1].startswith("DDK")) and \
                                         board[newRow + 2][newCol + 2] == "D":
@@ -694,13 +694,13 @@ def get_legal_moves(board, player):
                             newRow = newRow - 2
                             newCol = newCol + 2
                             # third right eat
-                            if row > 1 and col < 6 and (
+                            if newRow > 1 and newCol < 6 and (
                                     board[newRow - 1][newCol + 1].startswith("DD") or board[newRow - 1][
                                 newCol + 1].startswith("DDK")) and \
                                     board[newRow - 2][newCol + 2] == "D":
                                 legal_moves.append([(newRow, newCol), (newRow - 2, newCol + 2)])
                             # third left eat
-                            if row > 1 and col > 1 and (
+                            if newRow > 1 and newCol > 1 and (
                                     board[newRow - 1][newCol - 1].startswith("DD") or board[newRow - 1][
                                 newCol - 1].startswith("DDK")) and \
                                     board[newRow - 2][newCol - 2] == "D":
@@ -714,7 +714,7 @@ def get_legal_moves(board, player):
                             newRow = newRow - 2
                             newCol = newCol - 2
                             # third right eat
-                            if newRow > 1 and col < 6 and (
+                            if newRow > 1 and newCol < 6 and (
                                     board[newRow - 1][newCol + 1].startswith("DD") or board[newRow - 1][
                                 newCol + 1].startswith("DDK")) and \
                                     board[newRow - 2][newCol + 2] == "D":
@@ -790,16 +790,6 @@ def evaluate(board, player,selected_strategy):
     WhiteKings = sum(row.count("DWK") for row in board)
     WhiteMoves = len(small_legal_moves(board, "DW"))
     DarkMoves = len(small_legal_moves(board, "DD"))
-    # score = (DarkPieces - WhitePieces)
-    # if player == "DW" and WhiteKings < 3:
-    #     score += (DarkKings - WhiteKings)
-    # else:
-    #     score += (DarkKings * 0.5 - WhiteKings * 0.5)
-    # for row in board[0]:
-    #     if row == "DWK":
-    #         score += 1
-    # score += (DarkMoves - WhiteMoves) * 0.1
-    # return score
     if selected_strategy == "Attack":
         score = (DarkPieces - WhitePieces)
         score += (DarkKings * 0.1 - WhiteKings * 0.1)
@@ -908,7 +898,7 @@ def Alpha_beta_pruning(board, player, depth, alpha, beta, max_player, selected_s
                 max_value = value
                 best_move = move
             alpha = max(alpha, max_value)
-            if alpha >= beta:
+            if alpha <= beta:
                 break  # Alpha cutoff
         return max_value, best_move, selected_strategy
 
@@ -954,7 +944,7 @@ def moveHuman(board, piece, new_place, player,realplay):
                 DarkKings += 1
             if realplay == 1:
                 start_gui(board)
-                time.sleep(2)
+                time.sleep(1)
             Temp = move[1]
             moved = True
         # [piece=(0,1),new_place=(1,2)]
@@ -991,7 +981,7 @@ def moveHuman(board, piece, new_place, player,realplay):
                 DarkKings += 1
             if realplay == 1:
                 start_gui(board)
-                time.sleep(2)
+                time.sleep(1)
             Temp = move[1]
             moved = True
     if moved == False:
