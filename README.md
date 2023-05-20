@@ -39,7 +39,7 @@ This project is a Python implementation of the Checkers game with a computer pla
 2. Clone the repository:
 
    ```shell
-   git clone https://github.com/your-username/checkers-game-ai.git
+   git clone https://github.com/alaaGaafer/Checkers.git
    python main.py
    
 ## Contributing
