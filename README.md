@@ -2,8 +2,26 @@
 
 This project is a Python implementation of the Checkers game with a computer player playing against an AI opponent. The computer player makes random moves, while the AI player uses either the minimax or alpha-beta pruning algorithm based on user selection. The game allows users to choose between different evaluation criteria for the AI player, specifically "Plot" and "Attack," and offers various difficulty levels.
 
-## Functions
+## Features
 
+- Play against another human player, an AI opponent, or watch a computer vs AI match.
+- Click on pieces to select and move them; legal moves are highlighted.
+- Choose between different difficulty levels and AI evaluation strategies.
+- Create an executable version of the game using the provided `cxfreeze` command.
+- 
+## Modes
+-Human vs Human: Play against another human player. Alternate turns and move pieces by clicking on them and then clicking on valid destination squares.
+
+-Human vs AI: Challenge the AI player in a one-on-one match. Click on pieces to move, and the AI will make strategic decisions based on the chosen difficulty level 
+ and evaluation strategy.
+
+-Computer vs AI: Watch a computer-controlled player take on the AI. Sit back and observe the AI's decision-making process.
+
+## Functions
+- `mode_sel()`: Allows the user to choose between Playing against another human player, an AI opponent, or watch a computer vs AI match.
+  
+- `updatee(borad, leg, player)` : Updates the board for the moving piece only .
+  
 - `level_selection()`: Prompts the user to choose the difficulty level for the AI player. The available options depend on the specific implementation of the game and can range from easy to hard difficulty levels.
 
 - `start_gui()`: Initializes the graphical user interface (GUI) for the game, providing an interactive environment where users can play against the AI.
@@ -32,15 +50,20 @@ This project is a Python implementation of the Checkers game with a computer pla
 
 - `winner(board)`: Checks if a player has won the game based on the current board state. It returns the winning player or None if there is no winner yet.
 
-## Usage
+## Usage & Creating an exe file
+To turn the game into an executable that can be played without a Python installation, follow these steps:
 
-1. Ensure you have Python installed on your machine.
+1-Open a terminal or command prompt.
 
-2. Clone the repository:
+2-Navigate to the project directory containing main.py.
 
-   ```shell
-   git clone https://github.com/alaaGaafer/Checkers.git
-   python main.py
+3-Run the following command:
+(cxfreeze "C:\Users\<YourUsername>\Desktop\Checkers\main.py" --target-dir "C:\Users\<YourUsername>\Desktop\Checkers\dist" --target-name "my_program")
+Replace <YourUsername> with your actual username.
+
+4-Once the process is complete, you will find the executable named my_program in the dist directory.
+
+5-Double-click the executable to play the game without needing a Python installation.
    
 ## Contributing
   Contributions to this project are welcome! If you find any issues or have suggestions for improvements, please feel free to submit a pull request or open an issue.
