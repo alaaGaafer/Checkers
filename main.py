@@ -1246,13 +1246,37 @@ def show_message_box(message):
         # Draw the message box
         # pygame.draw.rect(screen, BLACK, (50, 50, 300, 200))
         pygame.draw.rect(screen, WHITE, (60, 60, 280, 180))
+        # Create Yes button
+        play_button = pygame.Rect(120, 130, 100, 50)
+        play_text = font.render("Yes", True, WHITE)
+        play_text_rect = play_text.get_rect(center=play_button.center)
+        # Create No button
+        no_play_button = pygame.Rect(270, 130, 100, 50)
+        no_play_text = font.render("No", True, WHITE)
+        no_play_text_rect = no_play_text.get_rect(center=no_play_button.center)
+
 
         # Draw the message text
         text = font.render(message, True, BLACK)
-        text_rect = text.get_rect(center=(screen_width // 2, screen_height // 2))
+        text_rect = text.get_rect(center=(250, 55))
         screen.blit(text, text_rect)
-
+        text2 = font.render("wanna play again ?", True, BLACK)
+        text_rect2 = text2.get_rect(center=(250, 75))
+        screen.blit(text2, text_rect2)
+        pygame.draw.rect(screen, BLACK, play_button)
+        screen.blit(play_text, play_text_rect)
+        pygame.draw.rect(screen, BLACK, no_play_button)
+        screen.blit(no_play_text, no_play_text_rect)
         pygame.display.flip()
+        mouse_pos = pygame.mouse.get_pos()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if pygame.mouse.get_pressed()[0]:
+                if play_button.collidepoint(mouse_pos):
+                         main()
+                if no_play_button.collidepoint(mouse_pos):
+                    pygame.quit()
+                    sys.exit()
 
 
 def winner(new_board, FromMain):
@@ -1327,9 +1351,10 @@ def playhuman(board, player):
                             board[cell_y][cell_x] = 'selk'
                         updatee(board, legal, player)
 
-
-if __name__ == "__main__":
-    while True :
+def main():
+    global board, counter, start_time
+    mode = mode_sel()
+    if mode == "HH":
         counter = 0
         DarkPieces = 12
         WhitePieces = 12
@@ -1337,83 +1362,84 @@ if __name__ == "__main__":
         DarkKings = 0
         start_time = 0
         board = create_board()
-        mode = mode_sel()
-        if mode == "HH":
-            start_gui(board, [], 0, 'DW')
-            start_time = time.time()
-            while not winner(board, 1) == True:
-                if counter % 2 == 0:
-                    playhuman(board, "DW")
-                elif not counter % 2 == 0:
-                    playhuman(board, "DD")
-                counter += 1
-        elif mode == "HAI":
-            depth = 0
-            selected_level, selected_strategy, selected_algorithm = level_selection()
-            # easy
-            if selected_level == 1:
-                depth = 2
-            # Medium
-            elif selected_level == 2:
-                depth = 4
-            # hard
-            elif selected_level == 3:
-                depth = 6
-            counter = 0
-            DarkPieces = 12
-            WhitePieces = 12
-            WhiteKings = 0
-            DarkKings = 0
-            board = create_board()
-            start_gui(board, [], 0, 'DW')
-            time.sleep(1)
-            start_time = time.time()
-            while not winner(board, 1) == True:
-                if counter % 2 == 0:
-                    player = "DW"
-                    playhuman(board, "DW")
-                elif not counter % 2 == 0:
-                    player = "DD"
-                    if selected_algorithm == "Minimax":
-                        play_ai_move(board, player, depth, selected_strategy)
-                    elif selected_algorithm == "Alpha":
-                        play_alpha_beta_ai(board, player, depth, selected_strategy)
-                counter += 1
-
-        elif mode == "CAI":
-            depth = 0
-            selected_level, selected_strategy, selected_algorithm = level_selection()
-            # easy
-            if selected_level == 1:
-                depth = 2
-            # Medium
-            elif selected_level == 2:
-                depth = 4
-            # hard
-            elif selected_level == 3:
-                depth = 6
-            counter = 0
-            DarkPieces = 12
-            WhitePieces = 12
-            WhiteKings = 0
-            DarkKings = 0
-            board = create_board()
-            start_gui(board, [], 0, 'DW')
-            time.sleep(1)
-            start_time = time.time()
-            while not winner(board, 1) == True:
-                if counter % 2 == 0:
-                    player = "DW"
-                    if selected_algorithm == "Minimax":
-                        play_ai_move(board, player, depth, selected_strategy)
-                    elif selected_algorithm == "Alpha":
-                        play_alpha_beta_ai(board, player, depth, selected_strategy)
-                elif not counter % 2 == 0:
-                    player = "DD"
-                    Computer(board, player, 1)
-                counter += 1
-
-        end_time = time.time()
+        start_gui(board, [], 0, 'DW')
+        start_time = time.time()
+        while not winner(board, 1) == True:
+            if counter % 2 == 0:
+                playhuman(board, "DW")
+            elif not counter % 2 == 0:
+                playhuman(board, "DD")
+            counter += 1
+    elif mode == "HAI":
+        depth = 0
+        selected_level, selected_strategy, selected_algorithm = level_selection()
+        # easy
+        if selected_level == 1:
+            depth = 2
+        # Medium
+        elif selected_level == 2:
+            depth = 4
+        # hard
+        elif selected_level == 3:
+            depth = 6
+        counter = 0
+        DarkPieces = 12
+        WhitePieces = 12
+        WhiteKings = 0
+        DarkKings = 0
+        board = create_board()
+        start_gui(board, [], 0, 'DW')
         time.sleep(1)
-        elapsed_time = end_time - start_time
-        print(f"Elapsed Time: {elapsed_time} seconds")
+        start_time = time.time()
+        while not winner(board, 1) == True:
+            if counter % 2 == 0:
+                player = "DW"
+                playhuman(board, "DW")
+            elif not counter % 2 == 0:
+                player = "DD"
+                if selected_algorithm == "Minimax":
+                    play_ai_move(board, player, depth, selected_strategy)
+                elif selected_algorithm == "Alpha":
+                    play_alpha_beta_ai(board, player, depth, selected_strategy)
+            counter += 1
+
+    elif mode == "CAI":
+        depth = 0
+        selected_level, selected_strategy, selected_algorithm = level_selection()
+        # easy
+        if selected_level == 1:
+            depth = 2
+        # Medium
+        elif selected_level == 2:
+            depth = 4
+        # hard
+        elif selected_level == 3:
+            depth = 6
+        counter = 0
+        DarkPieces = 12
+        WhitePieces = 12
+        WhiteKings = 0
+        DarkKings = 0
+        board = create_board()
+        start_gui(board, [], 0, 'DW')
+        time.sleep(1)
+        start_time = time.time()
+        while not winner(board, 1) == True:
+            if counter % 2 == 0:
+                player = "DW"
+                if selected_algorithm == "Minimax":
+                    play_ai_move(board, player, depth, selected_strategy)
+                elif selected_algorithm == "Alpha":
+                    play_alpha_beta_ai(board, player, depth, selected_strategy)
+            elif not counter % 2 == 0:
+                player = "DD"
+                Computer(board, player, 1)
+            counter += 1
+
+    end_time = time.time()
+    time.sleep(1)
+    elapsed_time = end_time - start_time
+    print(f"Elapsed Time: {elapsed_time} seconds")
+if __name__ == "__main__":
+    main()
+
